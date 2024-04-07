@@ -73,10 +73,17 @@
 				</p>
 			</div>
 
-			<button type="button" id="confirm-order-btn" class="group w-full h-16 flex items-center justify-center text-sm text-white text-center font-medium bg-orange-500 rounded-md py-4">
-				<p class="group-disabled:hidden">Checkout</p>
-				<img src="<?= BASE_URL . 'public/images/spinner.svg' ?>" alt="loader" class="w-8 h-8 hidden group-disabled:block">
-			</button>
+			<?php
+				if ($cart->getTotalQuantity() > 0) :
+			?>
+				<button type="button" id="confirm-order-btn" class="group w-full h-16 flex items-center justify-center text-sm text-white text-center font-medium bg-orange-500 rounded-md py-4">
+					<p class="group-disabled:hidden">Checkout</p>
+					<img src="<?= BASE_URL . 'public/images/spinner.svg' ?>" alt="loader" class="w-8 h-8 hidden group-disabled:block">
+				</button>
+			<?php
+				endif;
+			?>
+			
 		</div>
    </main>
 
