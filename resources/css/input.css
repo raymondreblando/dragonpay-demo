@@ -22,12 +22,12 @@ button{
 }
 
 .toast{
-    @apply fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 opacity-0 invisible rounded-md p-3 transition-all;
+    @apply fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 opacity-0 invisible rounded-md p-3 transition-all z-10;
 }
 
 .toast.success,
 .toast.error{
-    @apply top-8 opacity-100 visible;
+    @apply top-10 opacity-100 visible;
 }
 
 .toast.success{
