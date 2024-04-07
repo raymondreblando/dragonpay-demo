@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+button{
+    cursor: pointer;
+}
+
+.toast{
+    @apply fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 opacity-0 invisible rounded-md p-3 transition-all;
+}
+
+.toast.success,
+.toast.error{
+    @apply top-8 opacity-100 visible;
+}
+
+.toast.success{
+    @apply bg-emerald-500;
+}
+
+.toast.error{
+    @apply bg-red-500;
+}
+
+.payment-method{
+    @apply flex items-center bg-transparent hover:bg-gray-100 border border-gray-200 rounded-md px-4 py-3 transition-all;
+}
+
+.payment-method.active{
+    @apply bg-orange-100 border border-orange-500;
+}
