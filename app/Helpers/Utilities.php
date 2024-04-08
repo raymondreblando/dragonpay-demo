@@ -14,4 +14,14 @@ class Utilities
         $uniqueId = uniqid();
         return substr(md5($uniqueId), 0, 16);
     }
+
+    /**
+     * Get current date
+     * 
+     * @return string 
+     */
+    public static function getCurrentDate(): string
+    {
+        return date("Y-m-d H:i:s");
+    }
 }

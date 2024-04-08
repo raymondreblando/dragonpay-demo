@@ -3,18 +3,26 @@
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../config/init.php';
 
+use App\Helpers\Utilities;
 use App\Http\Requests\StoreCartRequest;
 
 Flight::set('flight.views.path', 'resources/views');
 
 // Display the main page
-Flight::route('/', function () use ($products, $cartSession) {
+Flight::route('GET /', function () use ($products, $cartSession) {
    if (isset($_SESSION['payref'])) {
       unset($_SESSION['payref']);
    }
 
 	Flight::render('index.php', [
       'products'=> $products->index(), 
+      'cart_quantity' => $cartSession->getTotalQuantity()
+   ]);
+});
+
+Flight::route('GET /orders', function () use ($orders, $cartSession) {
+   Flight::render('orders.php', [
+      'orders' => $orders->index(),
       'cart_quantity' => $cartSession->getTotalQuantity()
    ]);
 });
@@ -51,38 +59,44 @@ Flight::route('POST /cart', function () use ($carts, $cartSession) {
 });
 
 // POST Request for payment processing
-Flight::route('POST /pay', function () use ($payments, $cartSession) {
+Flight::route('POST /pay', function () use ($payments, $cartSession, $orders) {
+   $txnid = Utilities::generateAlphaNum();
+   $totalAmount = $cartSession->getTotalAmount();
+
    $payload = [
-      'Amount' => $cartSession->getTotalAmount(),
+      'Amount' => $totalAmount,
       'Currency' => 'PHP',
       'Description' => 'Dragonpay demo payment transaction',
       'Email' => 'testraymond@dragonpay.ph'
    ];
 
-   $response = $payments->processPayment($payload, $cartSession);
+   $response = $payments->processPayment($payload, $txnid, $cartSession);
    $jsonResponse = (object) json_decode($response, true);
 
-   if (
-      isset($response->error) 
-      || (isset($jsonResponse->Status) && $jsonResponse->Status == 'F') 
-      || (isset($jsonResponse->scalar))
-   ) {
+   if (isset($response->error) || (isset($jsonResponse->Status) && $jsonResponse->Status == 'F') || (isset($jsonResponse->scalar))) {
       return Flight::halt(404, 'An error occur. Try again');
    }
+
+   $jsonResponse->txnid = $txnid;
+   $jsonResponse->amount = $totalAmount;
+   $orders->store($jsonResponse);
 
    Flight::halt(200, json_encode($jsonResponse));
 });
 
 // GET request if payment was succeeded
-Flight::route('GET /pay/success', function () use ($payments, $cartSession) {
-   $status = Flight::request()->query->status;
+Flight::route('GET /payment/completed', function () use ($orders, $cartSession) {
+   $txnid = Flight::request()->query->txnid;
    $refno = Flight::request()->query->refno;
+   $status = Flight::request()->query->status;
 
    if (isset($status) && $status == 'F') {
       return Flight::halt(404, 'Payment was unsuccessful');
    }
 
-   $payments->processOrder($cartSession);
+   $cartSession->removeAllItems();
+   $orders->update($txnid, $status);
+
    $_SESSION['payref'] = $refno;
    Flight::redirect('/payment/notify');
 });

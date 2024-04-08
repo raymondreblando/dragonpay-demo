@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\OrderController;
 
 session_start();
 require __DIR__ . '/../vendor/autoload.php';
@@ -26,5 +27,6 @@ $DbHelper = new DbHelper($conn);
 $products = new ProductController($DbHelper);
 $carts = new CartController($DbHelper);
 $payments = new PaymentController($httpClient);
+$orders = new OrderController($DbHelper);
 
 define('BASE_URL', $_ENV['BASE_URL']);

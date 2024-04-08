@@ -24,13 +24,17 @@ class PaymentController extends Controller
    /**
     * Process the payment request
     * @param array $payload Payment details
+    * @param string $txnid Unique identifier
     * @param Cart $cart Cart instance
     * @return stdClass|bool|string
     */
-   public function processPayment(array $payload, Cart $cart): stdClass|bool|string
-   {
+   public function processPayment(
+      array $payload, 
+      string $txnid, 
+      Cart $cart
+   ): stdClass|bool|string {
       $this->_httpClient->init();
-      $response = $this->_httpClient->post($payload);
+      $response = $this->_httpClient->post($payload, $txnid);
 
       if ($this->_httpClient->hasError()) {
          return (object) [
@@ -40,16 +44,5 @@ class PaymentController extends Controller
       
       $this->_httpClient->destroy();
       return $response;
-   }
-
-   /**
-    * Process the order request
-    *
-    * @param Cart $cart Cart instance
-    * @return void
-    */
-   public function processOrder(Cart $cart): void
-   {
-      $cart->removeAllItems();
    }
 }

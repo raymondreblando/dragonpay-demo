@@ -45,3 +45,24 @@ button{
 .payment-method.active{
     @apply bg-orange-100 border border-orange-500;
 }
+
+.table-responsive{
+    @apply w-full overflow-x-auto;
+}
+
+table{
+    @apply w-full text-center whitespace-nowrap border-collapse border border-gray-200;
+}
+
+th,
+td{
+    @apply py-3 px-4;
+}
+
+th{
+    @apply text-xs text-gray-700 font-medium uppercase border border-b-gray-200;
+}
+
+td{
+    @apply text-xs text-gray-500 border border-b-gray-200;
+}

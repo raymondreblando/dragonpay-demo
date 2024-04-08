@@ -22,9 +22,9 @@ class HttpClient
      * @param array $payload data to be sent to the api
      * @return bool|string
      */
-    public function post(array $payload): bool|string
+    public function post(array $payload, string $txnid): bool|string
     {
-        curl_setopt($this->client, CURLOPT_URL, $_ENV['API_BASE_URL'] . Utilities::generateAlphaNum(). '/post');
+        curl_setopt($this->client, CURLOPT_URL, $_ENV['API_BASE_URL'] . $txnid . '/post');
         curl_setopt($this->client, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->client, CURLOPT_POST, true);
         curl_setopt($this->client, CURLOPT_POSTFIELDS, json_encode($payload));
